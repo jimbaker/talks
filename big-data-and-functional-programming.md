@@ -214,7 +214,6 @@ Ranking followers with PageRank
 
 ````scala
 val sc = new SparkContext(...)
-
 val users = sc
   .textFile("hdfs://user_attributes.tsv")
   .map(line => line.split)
@@ -222,15 +221,13 @@ val users = sc
 val followerGraph = Graph.textFile(sc, ...)
 val graph = followerGraph.outerJoinVertices(users){ 
   case (uid, deg, Some(attrList)) => attrList
-  case (uid, deg, None) => Array.empty[String] 
-}
+  case (uid, deg, None) => Array.empty[String] }
 val pagerankGraph = Analytics.pagerank(graph)
 val userInfoWithPageRank = 
   graph.outerJoinVertices(pagerankGraph.vertices) {
     case (uid, attrList, Some(pr)) => (pr, attrList)
     case (uid, attrList, None) => (pr, attrList)
   }
-// Above may be lazily computed, so force action
 println(userInfoWithPageRank.top(5))
 ````
 
