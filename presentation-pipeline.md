@@ -73,16 +73,34 @@ def random_permutation(iterable, r=None):
 Github
 ======
 
+The usual invocations:
+
+````bash
+$ git add presentation-pipeline.md
+$ git commit -m "Initial version"
+$ git push
+````
+
 Pandoc
 ======
 
 ````bash
-$ blah blah
+$ pandoc -f markdown -V theme:PaloAlto \
+--write beamer --template lecture.beamer \
+-o presentation-pipeline.pdf \
+presentation-pipeline.md
 ````
+
+* Or wrap in the script of your choice
+* Add `-i` option for incremental bullets
+* Read the [Pandoc docs](http://johnmacfarlane.net/pandoc/demo/example9/producing-slide-shows-with-pandoc.html) for more options on producing presentations
 
 LaTeX
 =====
 
+* Use arbitrary math
+* Such as getting $O(n^2)$ just by writing `$O(n^2)$`
+* Or use macro packages from stylesheets
 
 Example: math
 =============
@@ -105,7 +123,6 @@ forms, which connect a premise to a conclusion:
 \inferrule{n \in E}
           {n + 2 \in E}
 \end{mathpar}
-
 
 Example: math
 =============
@@ -172,7 +189,6 @@ Beamer templates
 \usesmartdiagramlibrary{additions}
 ````
 
-
 Beamer themes
 =============
 
@@ -210,4 +226,13 @@ You can include other HTML markup as well
 Questions
 =========
 
-?
+Any questions?
+
+Now or for later:
+
+````
+jim.baker@{python.org, rackspace.com}
+@jimbaker
+````
+
+Talk available at [github.com/jimbaker/talks](https://github.com/jimbaker/talks)
