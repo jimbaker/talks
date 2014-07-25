@@ -383,3 +383,5 @@ Now or for later:
 jim.baker@{python.org, rackspace.com}
 @jimbaker
 ````
+
+Talk available at [github.com/jimbaker/talks](https://github.com/jimbaker/talks)
