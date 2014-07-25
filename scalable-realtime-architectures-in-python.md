@@ -119,8 +119,6 @@ Also Apache incubator projects:
 * LinkedIn's Samza - message processor companion to Kafka written in Scala
 * Yahoo's S4 - written in Java, seems to be crowded out
 
-Other possibilities, including future ones like ZeroVM and ZAP
-
 
 Partitioning
 ============
