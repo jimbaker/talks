@@ -103,7 +103,7 @@ Cannot easily sweep away problems
 Enter Storm
 ===========
 
-* Lingo: spouts (event sources), bolts (process events), topology (connect together spouts)
+* Lingo: spouts (event sources), bolts (process events), topology (connect together spouts & bolts)
 * Strong support for partitioning and fault tolerance
 * Written in Clojure, exposes a Java API to any JVM language
 * Uses ZooKeeper internally
