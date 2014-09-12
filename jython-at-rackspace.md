@@ -34,13 +34,14 @@
 * From the beginning great Java integration via some cleverness
 * Small team of committers
 * Under on-and-off development since 1997
+* Extensively used
 
 # Who uses it?
 
 * Wall Street banks like Nomura Securities
 * Lockheed Martin, to build out software avionics like Lego blocks
 * BMW, to run its factory production lines building BMWs
-* Princeton Plasma Physics Lab, for research on nuclear fusion
+* Princeton Plasma Physics Lab, for research on nuclear fusion power
 * Most commonly used for glue, to support scripting and more of Java components
 * Do not underestimate the power of good glue!
 * Like Python as a whole: more functionality moving into the glue
@@ -49,8 +50,9 @@
 
 * Over 99% of the standard Python tests from CPython pass
 * Some differences, mostly at the corners
-* When do you notice corners: frameworks!
+* Code where we notice these corners: frameworks!
 * But that's what we have been working hard to address
+* (More to be covered in status of Jython)
 
 # No GIL
 
@@ -101,10 +103,10 @@ x["foo"] = 42
 
 # Semantic equivalence*
 
-* Where possible, Java objects in Python space are treated as equivalent
-* Duck typing
-* Also works vice versa - Python objects can be used from Java
-* Even more the case now with Clamp
+* Where possible, Java objects in Python space are treated as equivalent to Python
+* The magic of **duck typing**
+* Also works vice versa - Python objects can be used from Java if they implement Java interfaces/extend Java classes
+* Even more the case now with Clamp, which supports direct import
 
 # `java.util.Map`, duck typed
 
@@ -132,8 +134,7 @@ if _is_jython:
 
 * Where possible, we try to follow C implementation
 * But we also can more readily use Python, because of direct Java import
-* `itertools`
-* `threading`
+* Example `itertools.permuations`
 
 # Code that you don't see
 
@@ -178,51 +179,22 @@ _threads = dict_builder(
 # Implementation conclusions
 
 * JVM engineering support is fantastic
-* Periodically Java just gets much faster for how we use it
-* Especially in terms of housekeeping support, such as multithreading in GC
-* Still need to take advantage of infrastructure
+* Periodically JVM just gets much faster, especially in how we use its capabilities from Jython
+* Example: housekeeping support, such as multithreading in GC, and improving object allocation
+* Still need to take advantage of infrastructure like `invokedynamic` bytecode
 
 # Rackspace opportunities
 
 * Keystone Jython - wrap existing Java-based identity infrastructure
 * Storm for event processing
-* Repose
-* What else?
+* Easy customization of Repose
 
+# What else and why?
 
-# Keystone Jython
-
-FIXME
-
-* Operators may be running an existing identity infrastructure to
-  support existing usage in their data center(s). They would prefer to
-  provide a seamless experience to their customers as they migrate
-  some or all of their workloads to OpenStack.
-
-* Porting existing Java code to Python is avoided. This is especially
-  helpful when considering that such operators want to avoid
-  additional and significant investment in existing working code. Java
-  APIs can instead be directly used by a Keystone driver, which helps
-  improve the performance picture as well.
-
-* In the side-by-side migration, both Keystone and existing services can
-  be deployed in the same servlet container, given that WSGI can be
-  readily mapped to the servlet API. This simplifies deployment during
-  the transition, avoids additional latency overhead, and does not
-  require wrapping existing Java code in REST APIs that can then be
-  consumed. This is especially important if there is any impedance
-  mismatch between the identity models that could result in additional
-  overhead.
-
-* OpenStack operators often need to integrate these components with a
-Java-based environment. While REST or similar APIs can provide a good
-solution, this type of integration adds development, IPC, deployment,
-and other costs. We recently demonstrated running OpenStack's Keystone
-identity service directly on the JVM via Jython.  enabling immediate
-plug in of our existing Java-based identity provider. This BOF will
-discuss our solution, including support for unified logging, Spring
-dependency injection, and container support, as well as issues for
-other OpenStack components.
+* Rackspace invests in both Python and Java
+* Easy to integrate with Jython, in process, with a single import as we have seen
+* We know how to deploy and manage Java-based components, especially servlets
+* Keystone Jython proves this can be worthwhile
 
 # OpenStack
 
@@ -230,6 +202,12 @@ other OpenStack components.
 * Made up components - Nova, Swift, Keystone, ...
 * ... written in Python
 * High quality testing
+
+# Problem
+
+* We need to support Keystone v3 for customers and internal apps
+* Made a committment to do so by end of 2014
+* Solution: Keystone Jython
 
 # Alternatives to Keystone Jython
 
@@ -240,8 +218,11 @@ other OpenStack components.
 # Thoughts
 
 * These can be the right approaches!
-* But they have potential issues - coarse-grained vs fine grained and IPC overhead, server deployment
+* But they have potential issues - implementation costs (especially
+  for ports/rewrites), coarse-grained vs fine grained and IPC
+  overhead, server deployment
 * Can potentially be complementary - SOA vs library
+* Language implementations can give us extreme leverage - Jython is extensively used
 
 # Supporting Keystone v3 at Rackspace
 
@@ -305,9 +286,9 @@ logger.error('error message')
 
 * Partitioning problems, but with fault tolerance
 * Simple integration with Jython (uber jars)
-* Direct access to all Storm capabilities, as well as ZooKeeper
+* Direct access to all Storm capabilities, as well as ZooKeeper (via Apache Curator)
 * Or write a spout to consume Kafka, Rabbit, ... using Java APIs from Python
-* Just works
+* Just works without more support than Clamp, with reports from the field
 * Example usage at Rackspace: decisioning for autoscaling 
 
 # Repose
@@ -317,11 +298,6 @@ logger.error('error message')
 * Can readily incorporate Python customizations via Jython and
   `javax.servlet.Filter` (which maps to WSGI middleware)
 
-# What else?
-
-* Rackspace invests in both Python and Java
-* Easy to integrate with Jython
-* Keystone Jython proves this can be worthwhile
 
 # State of Jython
 
@@ -355,7 +331,8 @@ logger.error('error message')
 # Working in the Netty pipeline
 
 ````python
-class PythonInboundHandler(ChannelInboundHandlerAdapter):
+class PythonInboundHandler(
+  ChannelInboundHandlerAdapter):
 
     def __init__(self, sock):
         self.sock = sock
@@ -411,7 +388,7 @@ def _handle_channel_future(self, future, reason):
 * pip now works (again!) but requires a branch for the moment, including wheel support
 * Dependency is completing a small PR against html5lib-python so that it doesn't use isolated UTF-16 surrogates in literals, since this is not actually legal unicode, nor does it work in Jython's UTF-16 based representation.
 * Ironically this usage is to detect such illegal use in input streams
-* Will also support virtualenv and tox
+* Will also support virtualenv (via venv) and tox
 * Plan to bundle pip support via ensurepip backport
 
 # Regular expressions
@@ -534,12 +511,22 @@ public class UseClamped {
 * Python bytecode compiler for Android, large complex methods
 * More hooks for Java integration
 * Integrating Zippy to provide PyPy-like performance (requires Graal JVM)
-* Java 9 may also add more features to optimize dynamic languages
+* Java 9 may also add more features to optimize dynamic languages such as *value* types
 
 # Jython 3.x?!
 
 * Comes up periodically!
 * Would be nice for unicode strings and bytestrings to have direct correspondence to Java
-* Remove code!
+* Delete code!
 * Plan to kickoff development at PyCon in Montreal Spring 2015
 * Release schedule: we will get there at some point!
+
+# Discussion and Questions
+
+* Contact me at `jim.baker@rackspace.com`
+* jython-dev and jython-users mailing lists
+* Source at `hg.python.org/jython`
+* Book at `jythonbook.com`
+* Main site `jython.org`
+* Questions?
+
