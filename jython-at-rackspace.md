@@ -20,18 +20,20 @@
 
 # Jython
 
-* Why do I care? What can it do for me?
-* Emphasis on compatibility with Python - CPython is our reference implementation
-* But with reasonable performance
-* Even possible to match or exceed PyPy...
+* Why do I care?
+* What can it do for me?
+* Compatible - CPython is our reference implementation and we use Python's regrtest
+* Still maintain performance
+* Future possibility: even possible to match or exceed PyPy...
 * Most important: easy integration with Java
 
 # Jython background
 
 * Implementation of Python for the Java platform
 * Compiles to Java bytecode
-* Under on-and-off development since 1997
+* From the beginning great Java integration via some cleverness
 * Small team of committers
+* Under on-and-off development since 1997
 
 # Who uses it?
 
@@ -82,8 +84,8 @@ SyntaxError: Never going to happen!
 # Performance
 
 * In some tests, can be faster than CPython
-* Not necessarily - still need to figure out why Bottle's re runs so slow
-* Python code will often depend on micro optimizations...
+* But not necessarily. Example: need to figure out why Bottle's `re` expressions runs so slow
+* Extant Python code will often depend on micro optimizations...
 * Then again, readily can use Java from Jython...
 
 # Using Java from Jython
@@ -101,12 +103,14 @@ x["foo"] = 42
 
 * Where possible, Java objects in Python space are treated as equivalent
 * Duck typing
-* Also works vice versa, especially with Clamp
+* Also works vice versa - Python objects can be used from Java
+* Even more the case now with Clamp
 
 # `java.util.Map`, duck typed
 
 * Works as if it's a regular `Mapping` object
-* `dir(HashMap)`
+* Standard Python introspection - eg `dir(HashMap)`
+* (Jython console)
 
 # Even abstract base classes
 
@@ -126,8 +130,10 @@ if _is_jython:
 
 # Implementation - C vs Java
 
-* Compare implementations in itertools or bz2
-* Takeaways
+* Where possible, we try to follow C implementation
+* But we also can more readily use Python, because of direct Java import
+* `itertools`
+* `threading`
 
 # Code that you don't see
 
@@ -165,13 +171,16 @@ cycle_dealloc(cycleobject *lz)
 ````
 from jythonlib import MapMaker, dict_builder
 
-_threads = dict_builder(MapMaker().weakValues().makeMap)()
+_threads = dict_builder(
+  MapMaker().weakValues().makeMap)()
 ````
 
-# Conclusions
+# Implementation conclusions
 
-* Much easier to write this implementation given implicit JVM engineering support
-* FIXME
+* JVM engineering support is fantastic
+* Periodically Java just gets much faster for how we use it
+* Especially in terms of housekeeping support, such as multithreading in GC
+* Still need to take advantage of infrastructure
 
 # Rackspace opportunities
 
@@ -180,13 +189,6 @@ _threads = dict_builder(MapMaker().weakValues().makeMap)()
 * Repose
 * What else?
 
-# Alternatives
-
-FIXME
-
-* These can be the right approaches!
-* But they have potential issues - coarse-grained vs fine grained and IPC overhead, server deployment
-* Can potentially be complementary - SOA vs library
 
 # Keystone Jython
 
@@ -229,30 +231,43 @@ other OpenStack components.
 * ... written in Python
 * High quality testing
 
+# Alternatives to Keystone Jython
+
+* Port Keystone v3 to Java - we did this with v2
+* Port Rackspace Identity to Python
+* Wrap Rackspace Identity with JAX-RS to give us REST APIs
+
+# Thoughts
+
+* These can be the right approaches!
+* But they have potential issues - coarse-grained vs fine grained and IPC overhead, server deployment
+* Can potentially be complementary - SOA vs library
+
 # Supporting Keystone v3 at Rackspace
 
 * Keystone supports identity backend plugins
 * Configurable for running under a wide range of setups
-* => no code changes in Keystone were required (except general bug fixes)
+* $\Longrightarrow$ **no code changes in Keystone were required**
+* Although we did find and fix some general bugs
 
 # Other OpenStack components?
 
 Keystone is a good test case:
 
 * Can be configured without C extension usage
-* Does not use eventlets/greenlets
+* Does not use eventlets (which uses greenlets)
 * Seamless identity support is generally expected by customers
 
 # Still applicable to other OpenStack components
 
 * Keystone uses common Oslo libraries
 * Package buildout with pbr, which builds upon pip, `site-packages` metadata
-* Possible to emulate greenlet model - ArtificialTurf package
+* Possible to emulate greenlet model with regular threads - ArtificialTurf package
+* Emulation is really possible and even reasonable? **Yes.**
 
-# Logging with LogBridge
+# Unified logging with LogBridge
 
-Unified logging is straighforward via a handler supporting SLF4J
-(Simple Logging Facade for Java):
+Easy support of SLF4J (Simple Logging Facade for Java):
   
 ````python
 import logging
@@ -267,38 +282,40 @@ formatter = logging.Formatter(
 handler.setFormatter(formatter)
 logger.addHandler(handler)
 
-logger.warn('warn message')
 logger.error('error message')
 ...
 ````
 
 # Dependency injection
 
-FIXME
-
-* Dependency injection. In our case, our Java identity infrastucture
-  uses Spring DI, which currently requires additional wrapping to be
-  directly useable by Jython. The Clamp project in Jython will soon
-  provide direct support for Java annotations, however.
+* Our Java identity infrastucture  uses Spring DI
+* Spring transforms the bytecode of annotated classes, so cannot directly use Python classes 
+* Requires wrapping your Python in Java classes
+* Clamp project will be able to directly support Java annotations, so will not have to do this
+* Plan to implement *real soon now*
 
 # Container
 
-* Choose from Tomcat, Glassfish, Jetty, ...
-* Just need to produce a war file
 * OpenStack components generally run within a WSGI container
 * WSGI can be readily mapped to the Java servlet API
+* Just need to produce a war file that packages metadata, jars (including Python classes)
+* Choose from Tomcat, Glassfish, Jetty, ... to run your war file
 
 # Storm
 
 * Partitioning problems, but with fault tolerance
-* FIXME
 * Simple integration with Jython (uber jars)
-
-# Storm for Autoscaling
-
-* Decision making
+* Direct access to all Storm capabilities, as well as ZooKeeper
+* Or write a spout to consume Kafka, Rabbit, ... using Java APIs from Python
+* Just works
+* Example usage at Rackspace: decisioning for autoscaling 
 
 # Repose
+
+* Sits in front of REST APIs to provide rate limiting, other services
+* Global counters, integrated with identity
+* Can readily incorporate Python customizations via Jython and
+  `javax.servlet.Filter` (which maps to WSGI middleware)
 
 # What else?
 
@@ -320,12 +337,13 @@ FIXME
 
 # Some recent changes to trunk
 
-* Java 7 JVM is now the minimum version - get to use `AutoCloseable`
-* Enable mixing Python and Java types in the bases of a class when using a metaclass
-* Added support for buffer and memoryview
-* Console and encoding support, such as unicodedata, IDNA, and CJK support
-* Relative star imports, which seems to impact a number of interesting projects.
+* Java 7 JVM is now the minimum version - get to use `AutoCloseable` and other goodies
+* Can now mix Python and Java types in the bases of a class when using a metaclass
+* Support for `buffer` and `memoryview` types
+* Console and encoding support, such as `unicodedata`, IDNA, and CJK support
+* Relative star imports
 * Many, many small fixes (bz2 support, including tarfile, ...)
+* Finalizer support (`__del__`) for new-style classes
 
 # socket-reboot
 
@@ -351,7 +369,6 @@ class PythonInboundHandler(ChannelInboundHandlerAdapter):
         self.sock.incoming.put(msg)
         self.sock._notify_selectors()
         ctx.fireChannelRead(msg)
-
     ...
 ````
 
@@ -369,7 +386,8 @@ class PythonInboundHandler(ChannelInboundHandlerAdapter):
 def _handle_channel_future(self, future, reason):
   def workaround_jython_bug_for_bound_methods(_):
     self._notify_selectors()
-  future.addListener(workaround_jython_bug_for_bound_methods)
+  future.addListener(
+    workaround_jython_bug_for_bound_methods)
   if self.timeout is None:
     return future.sync()
   elif self.timeout:
@@ -398,28 +416,30 @@ def _handle_channel_future(self, future, reason):
 
 # Regular expressions
 
-* Performance tuning of Jython's port of sre
+* Performance tuning of Jython's port of `sre` (underlying virtual machine for regular expressions)
 * Currently requires expansion of UTF-16 encoded strings into codepoints array
 * Memoization of this expansion means beautifulsoup now works with decent performance (no extra $O(n)$ factor)
-* May have implications for web frameworks
+* Implications for web frameworks like Django using `re`
 
 # Jython tools
 
 * Develop tooling outside the usual release schedule and problems of being in core
 * Clamp - improve integration of Jython from Java
-* Jiffy - support cffi for Jython
+* Jiffy - support CFFI for Jython
 * Fireside - blazing fast WSGI bridge for servlet containers
 * Logbridge - Use simple logging facade for Java as a Python logging handler
-* What else?
+* What else should we do?
 
 # Clamp
 
 * Precise integration with Java
-* Java can directly import Python modules (at last!)
+* Java can **directly import** Python modules (at last!)
 * Integrates with setuptools to produce jars
 * Includes future integration as well with Maven via Aether
 
 # Python class, extending Java interfaces
+
+Example:
 
 ````python
 from java.io import Serializable
@@ -430,6 +450,8 @@ class BarClamp(Callable, Serializable):
   def call(self):
     return 42
 ````
+
+NB: automatically fills in a reasonable `serialVersionUUID`
 
 # Python class, clamped
 
@@ -490,8 +512,9 @@ public class UseClamped {
 # Jiffy
 
 * Provide a CFFI backend for Jython
-* Pure vaporware
-* Cursory examination of `cffi.backend_ctypes` suggests effort is straightforward/modest
+* CFFI is a simple foreign function interface to C, gives great possible performance
+* Jiffy is now pure vaporware
+* Cursory examination of `cffi.backend_ctypes` suggests effort is straightforward/modest because of existing `jffi` package
 
 # JyNI
 
