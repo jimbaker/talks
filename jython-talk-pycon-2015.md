@@ -380,8 +380,10 @@ Demo project
 
 ```bash
 $ pip install bottle mako
-$ pip install git+https://github.com/jythontools/clamp.git
-$ pip install git+https://github.com/jythontools/fireside.git
+$ pip install \
+git+https://github.com/jythontools/clamp.git
+$ pip install \
+git+https://github.com/jythontools/fireside.git
 ```
 
 https://github.com/jimbaker/hellowsgi
@@ -392,11 +394,12 @@ https://github.com/jimbaker/hellowsgi
 from bottle import Bottle, MakoTemplate, route
 
 simple_app = app = Bottle()
-hello_template = MakoTemplate('<b>Hello ${name}</b>!')
+hello_template = MakoTemplate(
+  '<b>Hello ${name}</b>!')
 
 @app.route('/hello/<name>')
 def index(name):
-    return hello_template.render(name=name)
+  return hello_template.render(name=name)
 ```
 
 # Create a single jar
@@ -562,14 +565,17 @@ case Opcode.BINARY_ADD: {
 
 Dive into `ceval.c` and `PyBytecode.java`
 
-# Jython 2.7.x, where $x > 0$
+# Jython $2.7.x$, where $x > 0$
 
 * Mostly around performance, Java integration, and of course the usual bug fixes
 * Python bytecode compiler for Android, large complex methods
 * More hooks for Java integration
-* Integrating Zippy to provide PyPy-like performance (requires Graal JVM)
+* Plan to work on 2.7.x as long as Python 2.7 in wide use
+* Time-based releases, not feature-based
+* Every 6 months seems reasonable
+* Ideally use new workflow CPython is working on
 * Java 9 may also add more features to optimize dynamic languages
-* Plan to work on 2.7.x indefinitely as long as 2.7 is widely used
+* Integrating Zippy to provide PyPy-like performance (requires Graal JVM)
 
 # Jython 3.x?!
 
