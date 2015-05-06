@@ -32,6 +32,7 @@ Questions you might have in coming to this talk:
 
 * Initially proposed in [PEP 205](http://legacy.python.org/dev/peps/pep-0205/)
 * Implemented in Python 2.1 (released April 2001)
+* **Released 14 years ago!**
 
 # Example: `WeakSet`
 
@@ -44,15 +45,15 @@ from weakref import WeakSet
 
 # Weak referenceable classes
 
-Define a class `MyStr` like so:
+Define a class `X` like so:
 
 ```python
-class MyStr(str):
+class X(object):
     pass
 ```
 
 NB: `str` and certain other classes are not weak referenceable in
-CPython, but their subclasses are
+CPython, but their subclasses can be
 
 # Construction
 
@@ -61,7 +62,7 @@ list the set:
 
 ```python
 s = WeakSet()
-s.add(MyStr('foo'))
+s.add(X())
 list(s)
 ```
 
@@ -366,8 +367,8 @@ Yes, it does make sense. Both sides are independent.
 
 Jython implements this variant of the Highlander pattern:
 
-* Map the Java class to the Python wrapper, because Java code is using this class
-* Python wrapper to the Java class, because Python code is using this proxy
+* Map the Java class to Python wrappers (strong ref from using Java code)
+* Python classes to any using Java class (strong ref from using Python code)
 * AND *there can only be one* mapping (or at least should be)
 
 # Either might go away
