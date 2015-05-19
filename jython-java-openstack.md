@@ -8,16 +8,16 @@
 Jython is Python for the Java platform:
 
 * Compiles to Java bytecode
-* Very good concurrency support - no GIL, so computational threads do work
+* Very good concurrency support - no GIL, so computational threads actually work
 * `import java` - can readily import and use any Java package
 * Jython 2.7.0 recently released, corresponds to CPython 2.7
 * Support for Python C Extension API is under rapid development
 
 OpenStack on the JVM:
 
-* Feasible now for some components like Keystone
-* Can readily work with the general transition away from Eventlet
-* Trollius (backport of AsyncIO) or simply native threads
+* Feasible *now* for components like Keystone that don't use Eventlet
+* Can readily work with transition away from Eventlet
+* Or port Eventlet to Jython
 
 # Java components for OpenStack
 
