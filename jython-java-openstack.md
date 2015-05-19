@@ -8,7 +8,7 @@
 Jython is Python for the Java platform:
 
 * Compiles to Java bytecode
-* Very good concurrency support, including no GIL
+* Very good concurrency support - no GIL, so computational threads do work
 * `import java` - can readily import and use any Java package
 * Jython 2.7.0 recently released, corresponds to CPython 2.7
 * Support for Python C Extension API is under rapid development
@@ -36,11 +36,12 @@ But also different devops challenges:
 Best of both?
 
 * PySpark - use Py4J to embed CPython via JNI
-* Repose Python - mix standard WSGI middleware, Java servlet filters
 * Storm bolts/spouts, written in Python - Pyleus or Parse.ly or Jython
-* Demonstrated prototype of Java identity backend for Keystone
+* Keystone backend against Spring Data, using Jython
+* Repose Python - build mixed pipeline of Java servlet filters and any (PEP 3333 compliant) WSGI middleware using Falcon, Pecan, WebOb, Werkzeug, ...
 
 Advantages:
 
 * Keep the flexibility of Python development
-* Maintain performance if no IPC and no pickling/serialization
+* While maintaining good performance
+* Can also eliminate IPC, pickling/serialization costs
