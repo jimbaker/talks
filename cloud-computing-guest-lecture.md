@@ -13,6 +13,7 @@
 * Architect at Rackspace, focused on platformization, cloud computing, and big data
 * Once and future lecturer for CSCI 3155 Principles of Programming Languages
 * Formerly on Ubuntu Server team at Canonical
+* Formerly at Sauce Labs, supporting Selenium testing in the cloud
 * Founding Juju team member, working on service orchestration, for the cloud
 * Core developer of Jython and fellow of the Python Software Foundation
 * Co-author of *Definitive Guide to Jython* from Apress
@@ -22,7 +23,8 @@
 
 * Demonstrates "cloud computing" is a popular term in the wider economy
 * "Marketectures" (marketing + architecture) and ad bingo do make it more cloudy...
-* Also 
+* Also cloud and the law, specifically issues around data sovereignty
+* (anyone interested in Silicon Flatirons?)
 
 # One big idea
 
@@ -39,17 +41,17 @@
 
 > All problems in computer science can be solved by another level of indirection.
 
-- David Wheeler
+--- David Wheeler
 
 # Need to have a base case...
 
 > All problems in computer science can be solved by another level of indirection.
 
-- David Wheeler
+--- David Wheeler
 
-> "...except for the problem of too many layers of indirection."
+> ... except for the problem of too many layers of indirection
 
-- Kevlin Henney
+--- Kevlin Henney
 
 # Completing indirection
 
@@ -85,13 +87,6 @@ Various stuff to cover:
 * Horizontal scaling (maybe include quote from Morgan at Red Hat?)
 * Latency/speed of light/round trips for protocols/data center design/using multiple data centers/eventual consistency
 
-# Cloud and the law
-
-* Data sovereignty/data residency
-* European Court of High Justice recent ruling that bilateral *safe harbor* agreement between US and EU is invalid
-* HIPAA, PII, e-commerce considerations
-
-Cloud services also represents opportunities to solve some of these issues - consider payment services like PayPal that represented some of the first SaaS offerings
 
 # SOA - Service Oriented Architecture
 
@@ -100,10 +95,10 @@ Cloud services also represents opportunities to solve some of these issues - con
 
 # Steve Yegge and The Google Platforms Rant
 
-Or how Amazon learned to love platforms
+Or lessons learned on how Amazon learned to love platforms
 
 * [Summary](http://www.businessinsider.com/steve-yegge-google-platform-rant-2011-10)
-* [Unfortunate public posting](https://plus.google.com/+RipRowan/posts/eVeouesvaVX)
+* [Unfortunate public posting](https://plus.google.com/+RipRowan/posts/eVeouesvaVX) by Steve Yegge
 * Steve was not fired after all...
 * Steve is also an occasional user of and contributor to Jython, nice!
 
@@ -152,14 +147,22 @@ Note the analogue to business to business services, such as credit card processi
 # IaaS
 
 * The data center has an API
-* And we can connect to multiple data centers (regions) and availability zones (FIXME check OpenStack vs AWS vs ...)
+* And we can connect to multiple data centers (DCs, aka regions) and availability zones (subdivided DCs)
 * Instead of weeks, we get instances in seconds/minutes
 * Generally using hypervisors, but also lighterweight containers (Docker/Kubernetes), bare metal (OpenStack Ironic)
+* AWS, Azure, Google Cloud, OpenStack (such as provided by Rackspace or HP Public Cloud), or on your own DC
+* Key terms include provisioning, discovery, ...
 
-* AWS, Azure, Google Cloud, OpenStack
+# Cloud and the law
 
+* Data sovereignty/data residency
+* European Court of High Justice recent ruling that bilateral *safe harbor* agreement between US and EU is invalid
+* HIPAA, PII, e-commerce considerations
 
-* Key terms: provisioning, discovery, ...
+# Delegating the hard work to others
+
+* Early microservices like PayPal - ecommerce is not just for Amazon and its affiliates
+* Cloud services can be used to solve regulatory and legal compliance issues
 
 # Amazon Web Services - AWS
 
@@ -178,7 +181,7 @@ Started as a collaboration between NASA and Rackspace, since has grown tremendou
 * Neutron - networking
 * many, many other projects
 
-# Contrast your own servers
+# Contrast: use your own servers
 
 * You might just choose Docker or Vagrant
 
@@ -188,7 +191,7 @@ Started as a collaboration between NASA and Rackspace, since has grown tremendou
 * Why not just add it [multiple times](https://www.openstack.org/summit/vancouver-2015/summit-videos/presentation/docker-docker-docker-openstack)? ;)
 * There are always **hot**, must know technologies out there
 
-# Juju - a canonical example
+# Juju - a "canonical" example
 
 Use a GUI or drive from the command line:
 
@@ -224,15 +227,15 @@ FIXME anything public on provisioning servers?
 # Federation
 
 
-# Some basic ideas
+# Implementing clouds
 
 * Sharding/partitioning
 * Multitenancy
 * Shared nothing architectures
 * SQL vs NoSQL
 * Blue/green
-* Virtualization - jails, ability to escape the jail (eg why Docker is not safe as-is for multitenancy, but can be with some additional work, see Magnum)
-* Functional programming, referntial transparency
+* Virtualization - jails, ability to escape the jail
+* Functional programming, referential transparency
 
 # SQL vs NoSQL
 
