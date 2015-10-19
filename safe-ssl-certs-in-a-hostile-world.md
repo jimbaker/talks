@@ -1,4 +1,4 @@
-% Safe SSL Certs in a Hostile World: No Compromise
+% Safe SSL Certificates in a Hostile World: No Compromise
 % Jim Baker
 % jim.baker@rackspace.com
 
@@ -14,7 +14,7 @@ Overview
 About me
 ========
 
-* Software engineer at Rackspace
+* Racker on the Auto Scaling team
 * Core developer of Jython
 * Co-author of *Definitive Guide to Jython* from Apress
 * Lecturer in CS at Univ of Colorado at Boulder - "Principles of Programming Languages"

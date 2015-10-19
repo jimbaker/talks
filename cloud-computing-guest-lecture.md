@@ -79,19 +79,11 @@
 * Probably not OK if you crash this meeting tonight
 * But do join and attend in the future!
 
-# FIXME
-
-Various stuff to cover:
-
-* APIs!
-* Horizontal scaling (maybe include quote from Morgan at Red Hat?)
-* Latency/speed of light/round trips for protocols/data center design/using multiple data centers/eventual consistency
-
-
 # SOA - Service Oriented Architecture
 
-* 
 * Enables a base set of products to be extended via combination and further refinement
+* Various implementation strategies - WSDL-based services, REST-based services
+* But needs a common platform to combine together
 
 # Steve Yegge and The Google Platforms Rant
 
@@ -166,8 +158,8 @@ Note the analogue to business to business services, such as credit card processi
 
 # Amazon Web Services - AWS
 
-* EC2 - "elastic computing cloud"
-* S3 - something X 3 FIXME - *object* storage (does S3 support incremental patches, or only replacement?)
+* EC2 - "elastic computing cloud" - buy computing by the minute
+* S3 - "simple storage service" for *object* storage (does S3 support incremental patches, or only replacement?)
 * Many other services - block storage (EBS), notification, stream processing (Kinesis), ...
 * Or set up your own EC2 - Eucalyptus (now part of HP)
 
@@ -184,6 +176,8 @@ Started as a collaboration between NASA and Rackspace, since has grown tremendou
 # Contrast: use your own servers
 
 * You might just choose Docker or Vagrant
+* You will see similar emphasis on programmability, even similar APIs
+* Can control uniformly with cloud virtualization services like libcloud and JClouds
 
 # "docker docker docker" talk at the OpenStack Vancouver Summit 
 
@@ -217,53 +211,87 @@ $ juju add-relation hdfs-namenode:namenode \
 	hdfs-datacluster-02:datanode
 ```
 
-# Contrast dedicated hosting
-
-FIXME anything public on provisioning servers?
-
-
-# Private vs public cloud
-
-# Federation
-
-
 # Implementing clouds
 
-* Sharding/partitioning
 * Multitenancy
+* Scaling via sharding/partitioning
+* Immutability
 * Shared nothing architectures
+* Data - strong consistency vs eventual consistency
 * SQL vs NoSQL
 * Blue/green
 * Virtualization - jails, ability to escape the jail
 * Functional programming, referential transparency
 
+# Immutability
+
+* Content distribution networks (CDNs)
+* and the power of immutability! (in terms of being able to reason about it)
+* Netflix
+
+# Relativity!
+
+At scale, sequencing is expensive!
+
+* Local sequencing is fairly cheap
+* Maintaining order requires communication
+* Communication proceeds no faster than the speed of light
+* Unless we have [ansibles](http://en.wikipedia.org/wiki/Ansible) ;)
+
+# Question
+
+How far does light in a vacuum approximately travel in one **nanosecond**?
+
+> * A - 1 kilometer
+> * B - 1 meter
+> * C - 1 foot
+> * D - 1 cm
+> * E - 1 mm
+
+# An interesting unit: light-foot
+
+* Useful unit: a *light-foot* $\approx$ 1.0167 [nanoseconds](http://en.wikipedia.org/wiki/Nanosecond)
+* Useful in the same way that units like tablespoons are useful - everyday intuitions
+* Pioneering computer scientist Grace Hopper [liked to talk](http://www.youtube.com/watch?v=JEpsKnWZrJ8) about this unit
+* Need to consider the [**velocity factor**](http://en.wikipedia.org/wiki/Velocity_factor)
+* Consider a 1 foot USB cable:
+      - No specifics about velocity factor on USB cables I could find
+      - But gives some insight into what a nanosecond really is
+
+# Data center design
+
+* It's all about the locality, to minimize communication hops and distance
+* Same core, same chip, same board, same unit, same rack, same aisle, same data center...
+* Design focused on communication latency as much as it's storage, computation
+
+# Data centers, illustrated
+
+* [Google streetview in the datacenter](http://www.google.com/about/datacenters/inside/streetview/)
+
+# Multidata center coordination
+
+* Big problem because of communication bottlenecks
+* Bigger problem because of data center connection reliability
+* These issues are **related**!
+* Datacenters are now distributed [around the world](https://www.rackspace.com/about/datacenters/)
+* Observations of [ping time between cities](http://wonderproxyblog.com/2011/02/09/miles-per-milisecond/) by one network provider
+* What could possibly go wrong?!!
+
+# Plug for CSCI 3155
+
+* Why is PoPL - a theory course - one of the most pragmatic courses in the CS curriculum?
+* A: functional programming
+
 # SQL vs NoSQL
 
-It's not about "SQL" because many so-called NoSQL databases have a SQL-like query language. Instead it is about the cost of doing distributed:
+It's not about "SQL" because many so-called NoSQL databases have a SQL-like query language. Instead it is about the cost of doing distributed operations:
 
 * Transactions
 * Joins
 
-(break out into slides)
+# SQL vs NoSQL
 
-# Relativity
-
-* Speed of light, etc
-
-# Ping times
-
-# Eventual consistency vs strong consistency
-
-* CAP theorem, and its status
-* Cassandra (DataStax)
-* MySQL Galera
-
-# Content distribution networks (CDNs)
-
-* and the power of immutability! (in terms of being able to reason about it)
-* Netflix - current stats?
-
-# Servers vs services
+(blackboard)
 
 # Chaos Monkey
 
@@ -274,58 +302,11 @@ Blue/green
 * Fedora Atomic
 * CoreOS (Rackspace relationship...)
 
-# Containers
+# Cloud init and existentialism
 
-* Docker - LXC, copy-on-write/union file system of some kind - aufs, btrfs, zfs, overlayfs,
+Consider the whale in the Hitchhikers Guide to the Galaxy
 
-# Hypervisors
+* Who am i?
+* What should i do?
+* cloud init is the same idea - we need to assign identity to our servers so they can become part of the service, we can orchestrate them, etc
 
-# Magnum
-
-# Bare metal
-
-
-# Cloud init
-
-who am i?
-what should i do?
-
-(maybe quote the whale from the Hitchhikers Guide to the Galaxy...)
-
-cannot simply run a saved VM
-(would be worthwhile showing this start up...)
-
-need a worker ready to do its work
-
-
-ssh credentials
-
-
-# Orchestration
-
-
-AWS auto scaling
-Heat
-Juju
-OpenShift
-
-# Auto scaling
-
-
-
-
-# Sites and how they are implemented
-
-NYT vs DailyCamera...
-
-
-# Various SOA terms
-
-* SOA
-* REST
-* WSDL, ...
-* Native clients
-* Others: SAML, tokens, API keys, etc
-* Service catalog - can discover what services exist AND their endpoints
-* For IaaS: Can discover networks, instances, ...
-* For PaaS: can discover other things being managed (GitHub API)

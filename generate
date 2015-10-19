@@ -15,7 +15,7 @@ def main():
     pan_args = ["pandoc", "-f", "markdown", "-V", "theme:PaloAlto"]
     if args.incremental:
         pan_args.append("-i")
-    pan_args.extend(["--write", "beamer", "--template", "lecture.beamer", "-o", output, args.source])
+    pan_args.extend(["--write", "beamer", "-o", output, args.source])
     print "Executing:", " ".join(pan_args)
     subprocess.check_call(pan_args)
 
