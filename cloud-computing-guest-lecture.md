@@ -129,10 +129,10 @@ Examples include:
 
 Examples include:
 
-> * Mapping - including the original successful microservice, Google Maps
-> * Payment platforms
-> * Machine learning
-> * etc
+* Mapping - including the original successful microservice, Google Maps
+* Payment platforms
+* Machine learning
+* etc
 
 Note the analogue to business to business services, such as credit card processing, including new variants like Square
 
@@ -242,11 +242,11 @@ At scale, sequencing is expensive!
 
 How far does light in a vacuum approximately travel in one **nanosecond**?
 
-> * A - 1 kilometer
-> * B - 1 meter
-> * C - 1 foot
-> * D - 1 cm
-> * E - 1 mm
+* A - 1 kilometer
+* B - 1 meter
+* C - 1 foot
+* D - 1 cm
+* E - 1 mm
 
 # An interesting unit: light-foot
 
